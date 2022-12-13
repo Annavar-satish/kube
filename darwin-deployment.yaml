@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: darwin-deployment
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: darwin-app
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: darwin-app
+    spec:
+      containers:
+        - name: web-app
+          image: nginx
+          volumeMounts:
+          - name: darwin-volume
+            mountPath: /app/
+      volumes:
+       - name: darwin-volume
+         persistentVolumeClaim:
+          claimName: darwin-volume-claim
